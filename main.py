@@ -4,6 +4,8 @@ import matplotlib.image as mpimg
 import numpy as np
 import cv2
 import math
+import os
+from moviepy.editor import VideoFileClip
 
 def grayscale(img):
     """
@@ -119,3 +121,52 @@ def weighted_img(img, initial_img, α=0.8, β=1., γ=0.):
     NOTE: initial_img and img must be the same shape!
     """
     return cv2.addWeighted(initial_img, α, img, β, γ)
+
+
+
+
+images = os.listdir("test_images/")
+index = 0
+
+#reading in an image
+image = mpimg.imread('test_images/' + images[index])
+
+#printing out some stats and plotting
+print('This image is:', type(image), 'with dimensions:', image.shape)
+plt.imshow(image)
+
+
+def process_image(image):
+    """
+    This function calculates and adds the estimated lane lines into a given image by a defined pipeline
+    INPUT: RGB-image
+    OUTPUT: annotated RGB-image
+    """
+
+    # Size of Image
+    ysize = image.shape[0]
+    xsize = image.shape[1]
+
+    ## Preprocessing
+    # Grayscale Image and apply gaussian blur
+    grey_img = grayscale(image)
+    blurred_img = gaussian_blur(grey_img, 5)
+
+    ## Feature extraction
+    # Canny filter and mask
+    canny_img = canny(blurred_img, 100, 200)
+
+    vertices = np.array([[(100,ysize), (xsize/2 - 25, ysize/2+55), (xsize/2 + 25, ysize/2+55), (xsize, ysize)]], dtype=np.int32)
+    masked_img = region_of_interest(canny_img, vertices)
+
+    ## "Classification"
+    rho = 1
+    theta = 1 * np.pi / 180
+    threshold = 35
+    min_len = 15
+    max_gap = 300
+    hough_img = hough_lines(masked_img, rho, theta, threshold, min_len, max_gap)
+
+    identified_img = weighted_img(hough_img, image)
+    
+    return identified_img
