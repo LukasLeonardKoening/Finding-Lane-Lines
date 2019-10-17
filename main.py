@@ -129,19 +129,6 @@ def weighted_img(img, initial_img, α=0.8, β=1., γ=0.):
     """
     return cv2.addWeighted(initial_img, α, img, β, γ)
 
-
-
-
-images = os.listdir("test_images/")
-index = 0
-
-#reading in an image
-image = mpimg.imread('test_images/' + images[index])
-
-#printing out some stats and plotting
-print('This image is:', type(image), 'with dimensions:', image.shape)
-plt.imshow(image)
-
 ###
 #
 # Classification Function
@@ -182,3 +169,44 @@ def process_image(image):
     identified_img = weighted_img(hough_img, image)
     
     return identified_img
+
+
+###
+#
+# Testing
+#
+###
+
+## Single Image
+
+# Possible index from 0-4
+index = 0
+
+images = os.listdir("test_images/")
+
+#reading in the image
+image = mpimg.imread('test_images/' + images[index])
+
+#printing out some stats and plotting
+print('This image is:', type(image), 'with dimensions:', image.shape)
+
+processed_img = process_image(image)
+plt.imshow(processed_img)
+
+
+## Video
+output = 'test_videos_output/solidWhiteRight.mp4'
+clip = VideoFileClip("test_videos/solidWhiteRight.mp4")
+
+### 
+# OR
+#output = 'test_videos_output/solidYellowLeft.mp4'
+#clip = VideoFileClip('test_videos/solidYellowLeft.mp4')
+#
+# OR
+#challenge_output = 'test_videos_output/challenge.mp4'
+#clip = VideoFileClip('test_videos/challenge.mp4')
+###
+
+processed_clip = clip.fl_image(process_image)
+processed_clip.write_videofile(output, audio=False)
