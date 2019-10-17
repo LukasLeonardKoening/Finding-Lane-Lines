@@ -7,6 +7,13 @@ import math
 import os
 from moviepy.editor import VideoFileClip
 
+###
+#
+# Helper Functions
+#
+###
+
+
 def grayscale(img):
     """
     Applies the Grayscale transform
@@ -135,6 +142,11 @@ image = mpimg.imread('test_images/' + images[index])
 print('This image is:', type(image), 'with dimensions:', image.shape)
 plt.imshow(image)
 
+###
+#
+# Classification Function
+#
+###
 
 def process_image(image):
     """
