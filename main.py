@@ -149,7 +149,7 @@ def process_image(image):
     ## Preprocessing
     # Grayscale Image and apply gaussian blur
     grey_img = grayscale(image)
-    blurred_img = gaussian_blur(grey_img, 5)
+    blurred_img = gaussian_blur(grey_img, 1)
 
     ## Feature extraction
     # Canny filter and mask
@@ -163,7 +163,7 @@ def process_image(image):
     theta = 1 * np.pi / 180
     threshold = 35
     min_len = 15
-    max_gap = 300
+    max_gap = 100
     hough_img = hough_lines(masked_img, rho, theta, threshold, min_len, max_gap)
 
     identified_img = weighted_img(hough_img, image)
